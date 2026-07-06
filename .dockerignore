@@ -1,0 +1,14 @@
+# Secrets — never enter build context
+.env
+
+# Git history — skip to reduce transfer size
+.git/
+
+# Large generated directories (playground may grow these)
+node_modules/
+__pycache__/
+.venv/
+target/
+
+# OS junk
+.DS_Store

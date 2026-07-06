@@ -1,0 +1,66 @@
+# =============================================================================
+# Hermes Agent CLI Configuration
+# =============================================================================
+# Configured for Ollama Cloud provider with 2 models.
+#
+# Model switching via /model command:
+#   /model glm-5.1    — Default, general-purpose agentic engineering (200K ctx, text)
+#   /model gemma4:cloud — Vision & lightweight tasks (256K ctx, text+image)
+# =============================================================================
+
+model:
+  default: "glm-5.1"
+  provider: "ollama-cloud"
+
+# =============================================================================
+# Fallback Chain
+# =============================================================================
+# If the primary model fails (rate limit, timeout, 5xx), Hermes switches to
+# the next model in the chain. The chain is tried in order until one succeeds.
+# =============================================================================
+model_fallback:
+  - model: "glm-5.1"
+    provider: "ollama-cloud"
+  - model: "gemma4:cloud"
+    provider: "ollama-cloud"
+
+# =============================================================================
+# Context Compression
+# =============================================================================
+compression:
+  enabled: true
+  threshold: 0.50
+  target_ratio: 0.20
+  protect_last_n: 20
+  protect_first_n: 3
+  summary_model: "gemma4:cloud"
+
+# =============================================================================
+# Auxiliary Models
+# =============================================================================
+# Vision (image analysis, browser screenshots), web extraction, and
+# compression summaries all use gemma4:cloud for its multimodal capability.
+# =============================================================================
+auxiliary:
+  vision:
+    provider: "ollama-cloud"
+    model: "gemma4:cloud"
+  web_extract:
+    provider: "ollama-cloud"
+    model: "gemma4:cloud"
+  compression:
+    provider: "ollama-cloud"
+    model: "gemma4:cloud"
+
+# =============================================================================
+# Terminal Configuration
+# =============================================================================
+terminal:
+  backend: local
+  timeout: 120
+
+# =============================================================================
+# Gateway
+# =============================================================================
+gateway:
+  enabled: false

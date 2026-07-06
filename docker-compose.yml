@@ -1,0 +1,13 @@
+name: playground
+services:
+  playground:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/workspace:cached
+      - /dev/null:/workspace/.env:ro
+    init: true
+    env_file:
+      - .env
+    command: tail -f /dev/null
