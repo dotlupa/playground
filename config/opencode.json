@@ -1,7 +1,7 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "ollama-cloud/glm-5.1",
-  "small_model": "ollama-cloud/gemma4:31b",
+  "small_model": "ollama-cloud/qwen3.5:397b",
   "enabled_providers": ["ollama-cloud"],
   "provider": {
     "ollama-cloud": {
@@ -17,21 +17,21 @@
     "plan": {
       "model": "ollama-cloud/glm-5.1"
     },
-    "general": {
-      "model": "ollama-cloud/gemma4:31b"
-    },
     "explore": {
-      "model": "ollama-cloud/gemma4:31b"
+      "model": "ollama-cloud/kimi-k2.7-code"
+    },
+    "general": {
+      "model": "ollama-cloud/qwen3.5:397b"
+    },
+    "vision": {
+      "description": "Vision and image analysis agent using Qwen 3.5 Cloud (256K context, multimodal)",
+      "mode": "subagent",
+      "model": "ollama-cloud/qwen3.5:397b"
     },
     "code": {
       "description": "Programming-specialized agent using Kimi K2.7 Code (256K context)",
       "mode": "subagent",
       "model": "ollama-cloud/kimi-k2.7-code"
-    },
-    "vision": {
-      "description": "Vision and image analysis agent using Gemma4 (256K context, vision)",
-      "mode": "subagent",
-      "model": "ollama-cloud/gemma4:31b"
     },
     "large_project": {
       "description": "Large project agent using GLM 5.2 (1M context)",

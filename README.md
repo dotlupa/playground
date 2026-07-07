@@ -17,25 +17,27 @@
 
 ## AI 모델 구성
 
-[Ollama Cloud](https://ollama.com)를 프로바이더로 사용하며, 4개 모델을 용도별로 구성했습니다.
+[Ollama Cloud](https://ollama.com)를 프로바이더로 사용하며, 5개 모델을 용도별로 구성했습니다.
 
 ### 모델 소개
 
 | 모델 | 컨텍스트 | 비전 | 용도 |
 |---|---|---|---|
 | **GLM 5.1** (`glm-5.1`) | 198K | ✗ | 기본 코딩, 에이전트 작업. 장시간 작업에서 지속적으로 성능이 개선되는 특징 |
-| **Gemma 4 31B** (`gemma4:31b`) | 256K | ✓ | 이미지 분석, 요약, 경량 작업. 멀티모달 지원으로 비전 작업에 적합 |
+| **DeepSeek V4 Flash** (`deepseek-v4-flash`) | 1M | ✗ | 고속 에이전트 루프. MoE 구조로 낮은 지연과 높은 효율, 자율 루프 유지에 최적 |
 | **Kimi K2.7 Code** (`kimi-k2.7-code`) | 256K | ✓ | 프로그래밍 특화. 코딩 워크플로우 최적화, K2.6 대비 토큰 30% 절감 |
+| **Qwen 3.5** (`qwen3.5`) | 256K | ✓ | 멀티모달 비전 및 한국어 특화. 201개 언어 지원, 비전·요약·한국어 작업에 적합 |
 | **GLM 5.2** (`glm-5.2`) | 976K | ✗ | 대형 프로젝트. 1M 컨텍스트로 프로젝트 전체를 한 번에 처리 |
 
 ### opencode 에이전트 매핑
 
 | 에이전트 | 모델 | 설명 |
 |---|---|---|
-| `build` (기본) | `ollama-cloud/glm-5.1` | 메인 코딩 에이전트 |
+| `build` (기본) | `ollama-cloud/glm-5.1` | 메인 코딩 에이전트. SWE-Bench 오픈소스 1위, 자율 디버깅 및 에러 수정에 탁월 |
 | `plan` | `ollama-cloud/glm-5.1` | 계획 수립 에이전트 |
-| `general` | `ollama-cloud/gemma4:31b` | 경량 범용 에이전트 (요약, 제목 생성 등) |
-| `explore` | `ollama-cloud/gemma4:31b` | 코드 탐색 에이전트 |
+| `explore` | `ollama-cloud/kimi-k2.7-code` | 코드 베이스 탐색 에이전트. 심층 추론 및 아키텍처 분석에 최적 |
+| `general` | `ollama-cloud/qwen3.5:397b` | 경량 범용 에이전트 (요약, 제목 생성 등). 한국어 소통 및 멀티모달 지원 |
+| `vision` (서브에이전트) | `ollama-cloud/qwen3.5:397b` | 이미지 분석 및 비전 작업 (`@vision`으로 호출). 멀티모달 지원 |
 | `code` (서브에이전트) | `ollama-cloud/kimi-k2.7-code` | 프로그래밍 특화 (`@code`로 호출) |
 | `large_project` (서브에이전트) | `ollama-cloud/glm-5.2` | 대형 프로젝트 1M 컨텍스트 (`@large_project`으로 호출) |
 
@@ -43,11 +45,11 @@
 
 | 항목 | 모델 | 설명 |
 |---|---|---|
-| 기본 모델 | `glm-5.1` | `/model` 명령으로 전환 가능 |
-| 폴백 체인 | `glm-5.1` → `gemma4:cloud` | 기본 모델 실패 시 자동 전환 |
-| 비전 보조 | `gemma4:cloud` | 이미지 분석, 브라우저 스크린샷 |
-| 웹 추출 | `gemma4:cloud` | 웹 페이지 요약 |
-| 컨텍스트 압축 | `gemma4:cloud` | 대화 요약 (경량 모델 사용) |
+| 기본 모델 | `deepseek-v4-flash` | `/model` 명령으로 전환 가능. 고속 토큰 출력과 안정적 JSON Tool Call로 자율 루프 유지에 최적 |
+| 폴백 체인 | `deepseek-v4-flash` → `qwen3.5:cloud` | 기본 모델 실패 시 자동 전환 |
+| 비전 보조 | `qwen3.5:cloud` | 이미지 분석, 브라우저 스크린샷. 한국어 시각 이해에 우수 |
+| 웹 추출 | `qwen3.5:cloud` | 웹 페이지 요약 및 한국어 정리 |
+| 컨텍스트 압축 | `qwen3.5:cloud` | 대화 요약 (멀티모달·한국어 특화 모델 사용) |
 
 ## 초기 설정
 
@@ -119,7 +121,7 @@ opencode
 hermes
 
 # hermes 모델 전환
-hermes    # 대화형 시작 후 /model glm-5.2
+hermes    # 대화형 시작 후 /model -> qwen3.5:397b
 ```
 
 ### 4. 컨테이너 상태 확인
@@ -149,6 +151,7 @@ docker compose down
 .
 ├── .env.example        # API 키 템플릿 (복사해서 .env로 사용)
 ├── .gitignore
+├── CHANGELOG.md        # 변경 이력
 ├── config/
 │   ├── opencode.json   # opencode 에이전트 설정
 │   └── hermes.yml      # hermes 에이전트 설정

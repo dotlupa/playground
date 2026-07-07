@@ -2,14 +2,15 @@
 # Hermes Agent CLI Configuration
 # =============================================================================
 # Configured for Ollama Cloud provider with 2 models.
+# Models ordered by usage weight: primary loop → auxiliary.
 #
 # Model switching via /model command:
-#   /model glm-5.1    — Default, general-purpose agentic engineering (200K ctx, text)
-#   /model gemma4:cloud — Vision & lightweight tasks (256K ctx, text+image)
+#   /model deepseek-v4-flash — Default, fast agentic loop orchestrator (1M ctx, text)
+#   /model qwen3.5:cloud     — Vision, Korean text, and summary tasks (256K ctx, text+image)
 # =============================================================================
 
 model:
-  default: "glm-5.1"
+  default: "deepseek-v4-flash"
   provider: "ollama-cloud"
 
 # =============================================================================
@@ -19,9 +20,9 @@ model:
 # the next model in the chain. The chain is tried in order until one succeeds.
 # =============================================================================
 model_fallback:
-  - model: "glm-5.1"
+  - model: "deepseek-v4-flash"
     provider: "ollama-cloud"
-  - model: "gemma4:cloud"
+  - model: "qwen3.5:cloud"
     provider: "ollama-cloud"
 
 # =============================================================================
@@ -33,24 +34,25 @@ compression:
   target_ratio: 0.20
   protect_last_n: 20
   protect_first_n: 3
-  summary_model: "gemma4:cloud"
+  summary_model: "qwen3.5:cloud"
 
 # =============================================================================
 # Auxiliary Models
 # =============================================================================
 # Vision (image analysis, browser screenshots), web extraction, and
-# compression summaries all use gemma4:cloud for its multimodal capability.
+# compression summaries all use qwen3.5:cloud for its multimodal
+# capability and strong Korean language support.
 # =============================================================================
 auxiliary:
   vision:
     provider: "ollama-cloud"
-    model: "gemma4:cloud"
+    model: "qwen3.5:cloud"
   web_extract:
     provider: "ollama-cloud"
-    model: "gemma4:cloud"
+    model: "qwen3.5:cloud"
   compression:
     provider: "ollama-cloud"
-    model: "gemma4:cloud"
+    model: "qwen3.5:cloud"
 
 # =============================================================================
 # Terminal Configuration
