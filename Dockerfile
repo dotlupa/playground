@@ -28,7 +28,7 @@ ARG NVM_URL="https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh" \
     NVM_DIR="$HOME/.nvm" \
     RUST_URL="https://sh.rustup.rs" \
     UV_URL="https://astral.sh/uv/install.sh"
-    
+
 RUN set -eux; \
     curl --proto '=https' --tlsv1.2 -sSf "$RUST_URL" | sh -s -- -y; \
     . "$HOME/.cargo/env"; \

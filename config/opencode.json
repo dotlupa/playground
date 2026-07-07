@@ -24,7 +24,7 @@
       "model": "ollama-cloud/qwen3.5:397b"
     },
     "vision": {
-      "description": "Vision and image analysis agent using Qwen 3.5 Cloud (256K context, multimodal)",
+      "description": "Vision and image analysis using Qwen 3.5 Cloud (256K context, multimodal)",
       "mode": "subagent",
       "model": "ollama-cloud/qwen3.5:397b"
     },
